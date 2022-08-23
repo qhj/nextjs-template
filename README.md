@@ -110,3 +110,24 @@ set script:
 npm pkg set scripts.lint="pnpm eslint ."
 npm pkg set scripts.lint:fix="pnpm eslint --fix ."
 ```
+
+5. add husky, lint-staged and commitlint
+
+```bash
+pnpm add -D husky lint-staged @commitlint/{config-conventional,cli}
+pnpm husky install
+npm pkg set scripts.prepar="husky install"
+pnpm husky set .husky/pre-commit "pnpm lint-staged"
+pnpm husky set .husky/commit-msg 'pnpm commitlint --edit "$1"'
+git add .husky/pre-commit
+git add .husky/commit-msg
+echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
+```
+
+add `lint-staged.config.js`:
+
+```js
+module.exports = {
+  '**/*.{ts,tsx}': 'eslint .',
+}
+```
